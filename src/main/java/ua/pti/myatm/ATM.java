@@ -2,14 +2,16 @@ package ua.pti.myatm;
 
 public class ATM {
         
+    private double moneyInATM;
+    
     //Можно задавать количество денег в банкомате 
     ATM(double moneyInATM){
-         throw new UnsupportedOperationException("Not yet implemented");
+         this.moneyInATM = moneyInATM;
     }
 
     // Возвращает каоличестов денег в банкомате
     public double getMoneyInATM() {
-         throw new UnsupportedOperationException("Not yet implemented");
+         return moneyInATM;
     }
         
     //С вызова данного метода начинается работа с картой
