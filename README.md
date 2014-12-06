@@ -1,4 +1,4 @@
-JUnitSimple
+JUnitSimpleRen
 ===========
 
 Using a simple JUnit structures.
