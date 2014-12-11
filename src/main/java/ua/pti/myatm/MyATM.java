@@ -1,5 +1,9 @@
 package ua.pti.myatm;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import ua.pti.myatm.generateATMexception.NoCardInsertedException;
+
 public class MyATM {
 
     public static void main(String[] args) {
@@ -7,8 +11,11 @@ public class MyATM {
         ATM atm = new ATM(moneyInATM);
         Card card = null;
         atm.validateCard(card, 1234);
-        atm.checkBalance();
-        atm.getCash(999.99);   
-        System.out.println("Thr End.");
+        try {
+            atm.checkBalance();
+            atm.getCash(999.99);
+        } catch (Exception exept) {
+            System.out.println(exept.getStackTrace());
+        }
     }
 }

@@ -1,32 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ua.pti.myatm;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import ua.pti.myatm.generateATMexception.NoCardInsertedException;
+import ua.pti.myatm.generateATMexception.NotEnoughtMoneyInATMexception;
+import ua.pti.myatm.generateATMexception.NotEnoughtMoneyInAccountException;
 
-/**
- *
- * @author andrii
- */
 public class ATMTest {
 
     @Test
-    public void testGetMoneyInATM() {
+    public void testGetMoneyInATMEqualsWithCreatingParam() {
         System.out.println("getMoneyInATM");
-        ATM instance = null;
-        double expResult = 0.0;
-        double result = instance.getMoneyInATM();
+        Double expResult = anyDouble();
+        ATM atm = new ATM(expResult);
+        double result = atm.getMoneyInATM();
         assertEquals(expResult, result, 0.0);
-        fail("The test case is a prototype.");
     }
 
     @Test
-    public void testValidateCard() {
+    public void testPositiveValidateCard() {
         System.out.println("validateCard");
         Card card = null;
         int pinCode = 0;
@@ -38,7 +31,7 @@ public class ATMTest {
     }
 
     @Test
-    public void testCheckBalance() {
+    public void testCheckBalance() throws NoCardInsertedException {
         System.out.println("checkBalance");
         ATM instance = null;
         double expResult = 0.0;
@@ -48,7 +41,7 @@ public class ATMTest {
     }
 
     @Test
-    public void testGetCash() {
+    public void testGetCash() throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception {
         System.out.println("getCash");
         double amount = 0.0;
         ATM instance = null;
@@ -57,5 +50,5 @@ public class ATMTest {
         assertEquals(expResult, result, 0.0);
         fail("The test case is a prototype.");
     }
-    
+
 }
