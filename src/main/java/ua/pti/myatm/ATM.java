@@ -1,8 +1,6 @@
 package ua.pti.myatm;
 
-import ua.pti.myatm.generateATMexception.NoCardInsertedException;
-import ua.pti.myatm.generateATMexception.NotEnoughtMoneyInATMexception;
-import ua.pti.myatm.generateATMexception.NotEnoughtMoneyInAccountException;
+import ua.pti.myatm.generateATMexception.*;
 
 public class ATM {
 

@@ -1,9 +1,5 @@
 package ua.pti.myatm;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import ua.pti.myatm.generateATMexception.NoCardInsertedException;
-
 public class MyATM {
 
     public static void main(String[] args) {
