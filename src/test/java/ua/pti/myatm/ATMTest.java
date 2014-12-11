@@ -9,46 +9,113 @@ import ua.pti.myatm.generateATMexception.NotEnoughtMoneyInAccountException;
 
 public class ATMTest {
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetNegativeMoneyInATMThrownIllegalArgumentException() {
+        ATM myatm = new ATM(-1);
+    }
+
+    @Test
+    public void testATMconstructorParamEqualsGetMoney() {
+        double positiveMoney = 1000.;
+        ATM myatm = new ATM(positiveMoney);
+        assertTrue(myatm.getMoneyInATM() == positiveMoney);
+    }
+
     @Test
     public void testGetMoneyInATMEqualsWithCreatingParam() {
-        System.out.println("getMoneyInATM");
-        Double expResult = anyDouble();
+        Double expResult = 100.;
         ATM atm = new ATM(expResult);
         double result = atm.getMoneyInATM();
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result, 0.01);
     }
 
     @Test
-    public void testPositiveValidateCard() {
-        System.out.println("validateCard");
-        Card card = null;
-        int pinCode = 0;
-        ATM instance = null;
-        boolean expResult = false;
-        boolean result = instance.validateCard(card, pinCode);
-        assertEquals(expResult, result);
-        fail("The test case is a prototype.");
+    public void testValidateCardPositiveCase() {
+        ATM atm = new ATM(1000);
+        Card card = mock(Card.class);
+        when(card.checkPin(1234)).thenReturn(true);
+        when(card.isBlocked()).thenReturn(false);
+        assertTrue(atm.validateCard(card, 1234));
     }
 
     @Test
-    public void testCheckBalance() throws NoCardInsertedException {
-        System.out.println("checkBalance");
-        ATM instance = null;
-        double expResult = 0.0;
-        double result = instance.checkBalance();
-        assertEquals(expResult, result, 0.0);
-        fail("The test case is a prototype.");
+    public void testValidateCardNegativeCase() {
+        ATM atm = new ATM(1000);
+        Card card = mock(Card.class);
+        when(card.checkPin(0000)).thenReturn(false);
+        when(card.isBlocked()).thenReturn(false);
+        assertFalse(atm.validateCard(card, 0000));
     }
 
     @Test
+    public void testCheckBalanceReturnsParamEqualsConstructor() throws NoCardInsertedException {
+        double expResult = 1000.0;
+        ATM atm = new ATM(expResult);
+        Card card = mock(Card.class);		
+        Account account = mock(Account.class);
+        
+        when(card.checkPin(1234)).thenReturn(true);
+        when(card.isBlocked()).thenReturn(false);
+        when(card.getAccount()).thenReturn(account);
+        when(account.getBalance()).thenReturn(expResult);
+
+        assertEquals(expResult, card.getAccount().getBalance(), 0.01);
+    }
+
+   /* @Test
     public void testGetCash() throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception {
-        System.out.println("getCash");
-        double amount = 0.0;
-        ATM instance = null;
-        double expResult = 0.0;
-        double result = instance.getCash(amount);
-        assertEquals(expResult, result, 0.0);
-        fail("The test case is a prototype.");
-    }
+        double expResult = 1000.0;
+        ATM atm = new ATM(expResult);
+        Card card = mock(Card.class);		
+        Account account = mock(Account.class);
+        
+        when(card.checkPin(1234)).thenReturn(true);
+        when(card.isBlocked()).thenReturn(false);
+        when(card.getAccount()).thenReturn(account);
+        
+    }*/
+    
+    
+	@Test (expected = NoCardInsertedException.class)
+	public void getCashNoCardInATMNoCardInATMException() 
+			throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception{
+		ATM atm = new ATM(1000);
+		atm.getCash(50);
+
+	}
+	
+	@Test (expected = NotEnoughtMoneyInAccountException.class)
+	public void getCashCardInATMEnoughtMoneyInATMNotEnoughtMoneyInAccountNotEnoughtMoneyInAccountException() 
+			throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception{
+		ATM atm = spy(new ATM(1000));
+		Card card = mock(Card.class);
+		Account account = mock(Account.class);
+		double expectedBalanse = 10;
+		
+		when(card.checkPin(1111)).thenReturn(true);
+		when(card.isBlocked()).thenReturn(false);
+		when(card.getAccount()).thenReturn(account);
+		when(account.getBalance()).thenReturn(expectedBalanse);
+		assertTrue(atm.validateCard(card, 1111));
+		
+		atm.getCash(50);
+	}
+	
+	@Test (expected = NotEnoughtMoneyInATMexception.class)
+	public void getCashCardInATMNotEnoughtMoneyInATMEnoughtMoneyInAccountNotEnoughtMoneyInATMexception() 
+			throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception{
+		ATM atm = spy(new ATM(1000));
+		Card card = mock(Card.class);
+		Account account = mock(Account.class);
+		double expectedBalanse = 10000;
+		
+		when(card.checkPin(1111)).thenReturn(true);
+		when(card.isBlocked()).thenReturn(false);
+		when(card.getAccount()).thenReturn(account);
+		when(account.getBalance()).thenReturn(expectedBalanse);
+		assertTrue(atm.validateCard(card, 1111)); 
+		
+		atm.getCash(5000);
+	} 
 
 }

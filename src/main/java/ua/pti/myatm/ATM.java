@@ -10,7 +10,11 @@ public class ATM {
     private Card cardInATM = null;
 
     ATM(double moneyInATM) {
-        this.moneyInATM = moneyInATM;
+        if (moneyInATM < 0) {
+            throw new IllegalArgumentException();
+        } else {
+            this.moneyInATM = moneyInATM;
+        }
     }
 
     public double getMoneyInATM() {
