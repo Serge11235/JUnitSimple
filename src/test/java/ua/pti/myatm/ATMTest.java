@@ -10,7 +10,7 @@ public class ATMTest {
 
 //check  ATM initialisation
     @Test(expected = IllegalArgumentException.class)
-    public void testSetNegativeMoneyInATMThrownIllegalArgumentException() {
+    public void testATMconstructorNegativeMoneyThrownIllegalArgumentException() {
         ATM myatm = new ATM(-1);
     }
 
@@ -60,7 +60,7 @@ public class ATMTest {
 
 //check Balance
     @Test
-    public void testCheckBalanceParameterEqualsConstructor() throws NoCardInsertedException {
+    public void testCheckBalancePositiveCase() throws NoCardInsertedException {
         double expResult = 1000.0;
         ATM atm = new ATM(expResult);
         Card card = mock(Card.class);
@@ -70,6 +70,8 @@ public class ATMTest {
         when(card.isBlocked()).thenReturn(false);
         when(card.getAccount()).thenReturn(account);
         when(account.getBalance()).thenReturn(expResult);
+       
+        atm.validateCard(card, 1234);
         double result = card.getAccount().getBalance();
 
         assertEquals(expResult, result, 0.0001);
@@ -165,6 +167,28 @@ public class ATMTest {
         ATM atm10 = new ATM(init);
     }
 
+     @Test
+    public void testWithdrowThenMoneyInAccountValueReduction()
+            throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception {
+        double moneyOnATM = 10000;
+        double moneyOnAccount = 1000;
+        double ammount = 100;
+        double expResult = 900.;
+        ATM atm = new ATM(moneyOnATM);
+        Account account = mock(Account.class);
+        Card card = mock(Card.class);
+
+        when(card.checkPin(1234)).thenReturn(true);
+        when(card.isBlocked()).thenReturn(false);
+        when(card.getAccount()).thenReturn(account);
+        when(account.getBalance()).thenReturn(moneyOnAccount).thenReturn(moneyOnAccount-ammount);
+        when(account.withdrow(ammount)).thenReturn(ammount);
+        atm.validateCard(card, 1234);
+        double result = atm.getCash(ammount);
+        
+        assertEquals(expResult, result, 0.0001);
+    }
+    
     @Test
     public void testGetCashMethodsCallsInCorrectOrder()
             throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception {
@@ -182,9 +206,8 @@ public class ATMTest {
         atm.validateCard(card, 1234);
         atm.getCash(ammount);
 
-        InOrder order = inOrder(account);
+        InOrder order = inOrder(card, account);
+        order.verify(card).checkPin(1234);
         order.verify(account).getBalance();
-        order.verify(account).withdrow(ammount);
     }
-
 }
