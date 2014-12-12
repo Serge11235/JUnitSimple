@@ -7,7 +7,7 @@ public class ATM {
     private Card cardInATM = null;
 
     ATM(double moneyInATM) {
-        if (moneyInATM < 0) {
+        if (moneyInATM <0) {
             throw new IllegalArgumentException();
         } else {
             this.moneyInATM = moneyInATM;

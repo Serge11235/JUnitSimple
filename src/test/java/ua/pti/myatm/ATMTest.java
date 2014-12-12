@@ -13,6 +13,15 @@ public class ATMTest {
     public void testATMconstructorNegativeMoneyThrownIllegalArgumentException() {
         ATM myatm = new ATM(-1);
     }
+    
+    @Test
+        public void testATMconstructorInEqualsParamByZeroCaseIllegalArgumentException()
+        {
+            double exeptResult = 0.;
+            ATM myatm = new ATM(exeptResult);
+            double result = myatm.getMoneyInATM();
+            assertEquals(exeptResult, result, 0.0001);
+        }
 
     @Test
     public void testATMconstructorParamEqualsGetMoney() {
@@ -101,6 +110,7 @@ public class ATMTest {
         when(card.isBlocked()).thenReturn(false);
         when(card.getAccount()).thenReturn(account);
         when(account.getBalance()).thenReturn(expResult);
+       // when(card.getAccount().withdrow(ammount)).thenReturn();
 
         atm.validateCard(card, 1234);
         double result = atm.getCash(ammount);
@@ -190,7 +200,7 @@ public class ATMTest {
     }
     
     @Test
-    public void testGetCashMethodsCallsInCorrectOrder()
+    public void testGetCashMethodscheckPinAndGetBalanceCallsInCorrectOrder()
             throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception {
         double moneyOnATM = 10000;
         double moneyOnAccount = 1000;
@@ -210,4 +220,26 @@ public class ATMTest {
         order.verify(card).checkPin(1234);
         order.verify(account).getBalance();
     }
+    
+    @Test
+    public void testGetCashMethodsCallsInCorrectOrder()
+            throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception {
+        double moneyOnATM = 10000;
+        double moneyOnAccount = 1000;
+        double ammount = 100;
+        ATM atm = new ATM(moneyOnATM);
+        Account account = mock(Account.class);
+        Card card = mock(Card.class);
+
+        when(card.checkPin(1234)).thenReturn(true);
+        when(card.isBlocked()).thenReturn(false);
+        when(card.getAccount()).thenReturn(account);
+        when(account.getBalance()).thenReturn(moneyOnAccount);
+        atm.validateCard(card, 1234);
+        atm.getCash(ammount);
+
+        InOrder order = inOrder(account);
+        order.verify(account).getBalance();
+        order.verify(account, atLeastOnce()).withdrow(ammount);
+   }
 }
