@@ -3,7 +3,6 @@ package ua.pti.myatm;
 import ua.pti.myatm.generateATMexception.*;
 
 public class ATM {
-
     private double moneyInATM;
     private Card cardInATM = null;
 
